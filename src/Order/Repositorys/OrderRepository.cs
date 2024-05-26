@@ -4,40 +4,44 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
 {
     public class OrderRepository : IOrderRepository
     {
-        private DbSet<Order> _order;
-        private DatabaseContext _dbContext;
-        public OrderRepository(DatabaseContext dbContext)
+        private DbSet<Order> _orders { get; set; }
+        private DatabaseContext _databaseContext;
+
+        public OrderRepository(DatabaseContext databaseContext)
         {
-            _order = dbContext.Order;
-            _dbContext = dbContext;
+            _databaseContext = databaseContext;
+            _orders = databaseContext.Order;
         }
         public IEnumerable<Order> FindAll()
         {
-            return _order;
+            return _orders;
+        }
+        public Order? FindOne(Guid orderId)
+        {
+            Order? order = _orders.Find(orderId);
+            if (order is not null) return order;
+            return null;
         }
         public Order CreateOne(Order order)
         {
-            _order.Add(order);
-            _dbContext.SaveChanges();
+            _orders.Add(order);
+            _databaseContext.SaveChanges();
             return order;
         }
-        public Order? FindOne(Order NewOrder)
+        public Order UpdateOne(Order updatedOrder)
         {
-            Order? order = _order.FirstOrDefault(order => order.Id == NewOrder.Id);
+            _orders.Update(updatedOrder);
+            _databaseContext.SaveChanges();
+            return updatedOrder;
+        }
 
-            return order;
-        }
-        public Order? FindOneById(Guid id)
+        public bool DeleteOne(Guid id)
         {
-            Order? order = _order.FirstOrDefault(order => order.Id == id);
-
-            return order;
-        }
-        public Order? UpdateOne(Order updateOrder)
-        {
-            _order.Update(updateOrder);
-            _dbContext.SaveChanges();
-            return updateOrder;
+            Order? order = FindOne(id);
+            if (order is null) return false;
+            _orders.Remove(order);
+            _databaseContext.SaveChanges();
+            return true;
         }
     }
 }

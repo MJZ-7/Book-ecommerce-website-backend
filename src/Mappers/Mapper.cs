@@ -34,6 +34,10 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
             CreateMap<Category, CategoryReadDto>();
             CreateMap<CategoryCreateDto, Category>();
             CreateMap<CategoryReadDto, Category>();
+
+            CreateMap<AddressReadDto, Address>();
+            CreateMap<Address, AddressReadDto>();
+            CreateMap<AddressCreateDto, Address>();
         }
     }
 }

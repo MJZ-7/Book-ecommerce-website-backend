@@ -53,6 +53,11 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
                     .Where(p => p.Name.Contains(keyword))
                     .ToList();
         }
+        public void UpdateStock(Product updatedProduct)
+        {
+            _products.Update(updatedProduct);
+            _dbContext.SaveChanges();
+        }
 
     }
 

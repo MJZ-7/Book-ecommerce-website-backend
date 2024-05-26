@@ -6,50 +6,56 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
 
     public class OrderController : ControllerTemplate
     {
-        private IOrderService _orderService;
 
+        private IOrderService _orderService;
         public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
         }
 
         [HttpGet]
-        public IEnumerable<OrderReadDto> FindAll()
+        public ActionResult<IEnumerable<OrderReadDto>> FindAll()
         {
-            return _orderService.FindAll();
+            return Ok(_orderService.FindAll());
         }
+
         [HttpGet("{id}")]
-        public Order? FindOneById(Guid id)
+        public ActionResult<OrderReadDto?> FindOne([FromRoute] Guid id)
         {
-            return _orderService.FindOneById(id);
+            return Ok(_orderService.FindOne(id));
         }
 
         [Authorize(Roles = "Admin,User")]
-        [HttpPost]
+        [HttpPost("checkout")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
-        public ActionResult<OrderReadDto> CreateOne([FromBody] List<OrderCreateDto> orderCheckout)
+        public ActionResult<OrderReadDto> Checkout([FromBody] CheckoutDto checkoutList)
         {
-            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //creating order
-            if (orderCheckout is not null && userId is not null)
-            {
-                _orderService.CreateOne(orderCheckout, userId);
-                return Ok();
-            }
-            return BadRequest();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            if (checkoutList is null) return BadRequest();
+            return CreatedAtAction(nameof(Checkout), _orderService.Checkout(checkoutList, userId!));
         }
 
         [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public ActionResult<OrderReadDto> UpdateOne(Guid id, [FromBody] Order.OrderStatus status)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<OrderReadDto> UpdateOne(Guid id, [FromBody] Order order)
         {
-            var updateStatusOrder = _orderService.UpdateOne(id, status);
-            return CreatedAtAction(nameof(UpdateOne), updateStatusOrder);
-
+            OrderReadDto? updatedOrder = _orderService.UpdateOne(id, order);
+            if (updatedOrder is null) return BadRequest();
+            return CreatedAtAction(nameof(UpdateOne), updatedOrder);
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult DeleteOne([FromRoute] Guid id)
+        {
+            bool isDeleted = _orderService.DeleteOne(id);
+            if (!isDeleted) return NotFound();
+            return NoContent();
+
+        }
     }
 }
