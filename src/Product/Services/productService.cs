@@ -13,11 +13,16 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
             _config = config;
             _Mapper = mapper;
         }
-        public IEnumerable<ProductReadDto> FindAll(int limit, int offset)
+        public IEnumerable<ProductReadDto> FindAll(string? searchBy, int limit, int offset)
         {
 
             IEnumerable<Product> products = _productRepository.FindAll(limit, offset);
+            if (searchBy is not null)
+            {
+                products = products.Where(product => product.bookName.ToLower().Contains(searchBy.ToLower()));
+            }
             return products.Select(_Mapper.Map<ProductReadDto>);
+
         }
 
 
@@ -36,11 +41,11 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
             Product? product = _productRepository.FindOne(productId);
             if (product is not null)
             {
-                product.Name = updatedProduct.Name;
+                product.bookName = updatedProduct.bookName;
                 product.Description = updatedProduct.Description;
                 product.Price = updatedProduct.Price;
                 product.Stock = updatedProduct.Stock;
-                product.Color = updatedProduct.Color;
+                product.writerName = updatedProduct.writerName;
                 _productRepository.UpdateOne(product);
                 return _Mapper.Map<ProductReadDto>(product);
             }
@@ -70,15 +75,15 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
         {
 
             var foundProducts = _productRepository.Search(keyword)
-            .Where(product => product.Name.Contains(keyword))
+            .Where(product => product.bookName.Contains(keyword))
             .Select(product => new ProductReadDto
             {
-                Size = product.Size.ToString(),
-                Name = product.Name,
+
+                bookName = product.bookName,
                 Description = product.Description,
                 Price = product.Price,
                 Stock = product.Stock,
-                Color = product.Color,
+                writerName = product.writerName,
 
             })
             .ToList();

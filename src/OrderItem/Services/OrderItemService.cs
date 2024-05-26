@@ -22,7 +22,7 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
             return _orderItemRepository.FindAll();
         }
 
-        public OrderItem? UpdateOne(Guid orderItemId, int newQuantity, decimal newTotalPrice)
+        public OrderItem? UpdateOne(Guid orderItemId, int newQuantity, double newTotalPrice)
 
         {
 
