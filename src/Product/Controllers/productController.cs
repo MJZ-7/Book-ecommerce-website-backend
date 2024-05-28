@@ -12,10 +12,10 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<ProductReadDto>> FindAll([FromQuery(Name = "searchBy")] string? searchBy, [FromQuery(Name = "limit")] int limit, [FromQuery(Name = "offset")] int offset)
+        public ActionResult<IEnumerable<ProductReadDto>> FindAll
+        ([FromQuery(Name = "searchBy")] string? searchBy, [FromQuery(Name = "limit")] int limit, [FromQuery(Name = "offset")] int offset)
         {
             return Ok(_productService.FindAll(searchBy, limit, offset));
-
         }
         [HttpGet("{productId}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -33,7 +33,6 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
         }
         [HttpGet("search")]
         //This action method gives user the capability to search by keywords.
-
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<IEnumerable<ProductReadDto>> Search(string keyword)
@@ -46,7 +45,6 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
         }
 
         [HttpPost]
-
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
@@ -61,7 +59,7 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
         }
 
         [HttpPatch("{productId}")]
-
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         // [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<ProductReadDto> UpdateOne(Guid productId, [FromBody] ProductUpdateDto updatedProduct)
@@ -73,13 +71,12 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
 
 
         [HttpDelete("{productId}")]
-
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         public ActionResult DeleteOne(Guid productId)
         {
 
             return Accepted(_productService.DeleteOne(productId));
-
 
         }
     }

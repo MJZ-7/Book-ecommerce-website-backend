@@ -31,7 +31,7 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
             {
                 // Update properties of the found item
                 itemToUpdate.Quantity = newQuantity;
-                itemToUpdate.TotalPirce = newTotalPrice;
+                itemToUpdate.TotalPrice = newTotalPrice;
                 return itemToUpdate;
             }
             else
