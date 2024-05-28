@@ -18,7 +18,6 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
                 protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {
                         modelBuilder.HasPostgresEnum<Role>();
-                        modelBuilder.HasPostgresEnum<ProductSize>();
                         modelBuilder.HasPostgresEnum<Status>();
 
 

@@ -53,9 +53,9 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
                     orderItem.ProductId = product.Id;
                     orderItem.OrderId = order.Id;
                     orderItem.Quantity = orderCheckout.Quantity;
-                    orderItem.TotalPirce = (product.Price * orderCheckout.Quantity);
+                    orderItem.TotalPrice = (product.Price * orderCheckout.Quantity);
                     _orderItemRepository.CreateOne(orderItem);
-                    totalPrice += orderItem.TotalPirce;
+                    totalPrice += orderItem.TotalPrice;
                 }
             }
             order.TotalPrice = totalPrice;

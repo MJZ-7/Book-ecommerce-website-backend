@@ -1,16 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Npgsql;
 using Microsoft.OpenApi.Models;
 using Npgsql;
 using sda_onsite_2_csharp_backend_teamwork_The_countryside_developers;
 using sda_onsite_2_csharp_backend_teamwork_The_countryside_developers.src.Middlewares;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.Filters;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +16,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly); // Add Mapper in build
 
 // configuring DB
 var _config = builder.Configuration;
-var dataSourceBuilder = new NpgsqlDataSourceBuilder(@$"Host={_config["Db:Host"]};Username={_config["Db:Username"]};Database={_config["Db:Database"]};Password={_config["Db:Password"]}");
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(@$"Host={_config["Db_Host"]};Username={_config["Db_Username"]};Database={_config["Db_Database"]};Password={_config["Db_Password"]}");
 dataSourceBuilder.MapEnum<Role>();
 dataSourceBuilder.MapEnum<Status>();
 
@@ -37,16 +34,6 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program).Assembly); // Add Mapper in build 
-
-var _config = builder.Configuration;
-var dataSourceBuilder = new NpgsqlDataSourceBuilder(@$"Host={_config["Db:Host"]};Username={_config["Db:Username"]};Database={_config["Db:Database"]};Password={_config["Db:Password"]}");
-dataSourceBuilder.MapEnum<Role>();
-dataSourceBuilder.MapEnum<ProductSize>();
-var dataSource = dataSourceBuilder.Build();
-builder.Services.AddDbContext<DatabaseContext>((options) =>
-{
-    options.UseNpgsql(dataSource).UseSnakeCaseNamingConvention();
-});
 
 
 // Add services to the container.
@@ -116,27 +103,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SigningKey"]!))
+            ValidIssuer = builder.Configuration["Jwt_Issuer"],
+            ValidAudience = builder.Configuration["Jwt_Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt_SigningKey"]!))
         };
     });
 
-builder.Services.AddSwaggerGen(
-     options =>
-    {
-        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-        {
-            Description = "Bearer token authentication",
-            Name = "Authorization",
-            In = ParameterLocation.Header,
-            Scheme = "Bearer"
-        }
-        );
 
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
-    }
-);
 var app = builder.Build();
 // Error Handling Middleware:
 app.UseMiddleware<CustomErrorMiddleware>();

@@ -8,7 +8,7 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
                 public DateTime CreatedAt { get; set; } = DateTime.Now;
                 public Guid AddressId { get; set; }
                 public DateTime DeliveryAt { get; set; }
-                public OrderStatus Status { get; set; }
+                public Status Status { get; set; }
                 public double TotalPrice { get; set; }
 
 
@@ -16,6 +16,13 @@ namespace sda_onsite_2_csharp_backend_teamwork_The_countryside_developers
                 public IEnumerable<OrderItem> OrderItems { get; set; }
 
 
+        }
 
+        public enum Status
+        {
+                Processing,
+                Shipped,
+                OutForDelivery,
+                Delivered
         }
 }
